@@ -1,23 +1,24 @@
 "use strict";
 import express from 'express'
-import TwitterController from '../TwitterController'
+import * as TwitterController from './controller/TwitterController'
 import bodyParser from 'body-parser'
 
 const port = process.env.port || 7777
 let app = express()
-let router = express().Router()
+let twitterRouter = express.Router()
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello Node.js</h1>')
-});
+twitterRouter.route('/').get((req, res) => {
+    res.send('<h1>Hello Twitter</h1>')
+})
 
-app.get('/index', (req, res) => {
+twitterRouter.route('/index').get((req, res) => {
     res.send('<h1>This is index page</h1>')
-});
+})
 
-app.get('/tw', (req, res) => {
-    res.json(user);
-});
+twitterRouter.route('/tweet').post(TwitterController.tweet())
+
+//parent url
+app.use('/twitter', twitterRouter)
 
 //service start
 app.listen(port, () => {

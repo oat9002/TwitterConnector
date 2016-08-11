@@ -1,1 +1,1 @@
-export * as TwitterController from './TwitterController'
+export * as TwitterController from 'TwitterController'
