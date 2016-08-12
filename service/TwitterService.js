@@ -10,6 +10,8 @@ let T = new Twit({
 
 export function tweet(status) {
   T.post('statuses/update', { status: status }, (err, data, response) => {
-    console.log(data)
+    console.log('err: ' + err)
+    console.log('data: ' + data);
+    console.log('response: ' + response);
   })
 }
