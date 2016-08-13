@@ -1,11 +1,14 @@
 "use strict";
 import express from 'express'
 import * as TwitterController from './controller/TwitterController'
+import * as FacebookController from './controller/FacebookController'
+
 import bodyParser from 'body-parser'
 
 const port = process.env.port || 7777
 let app = express()
 let twitterRouter = express.Router()
+let facebookRouter = express.Router()
 
 // parse application/json
 app.use(bodyParser.json())
@@ -14,6 +17,10 @@ app.use(bodyParser.urlencoded({
 }))
 
 //parent url
+app.route('/').get((req, res) => {
+  res.send('<h1>Social REST Api</h1><br>/twitter<br>/facebook')
+})
+
 app.use('/twitter', twitterRouter)
 
 twitterRouter.route('/').get((req, res) => {
@@ -27,6 +34,19 @@ twitterRouter.route('/index').get((req, res) => {
 twitterRouter.route('/tweet').post((req, res) => {
   TwitterController.tweet(req.body)
 })
+
+app.use('/facebook', facebookRouter)
+
+facebookRouter.route('/').get((req, res) => {
+  res.send('<h1>Hello Facebook</h1>')
+})
+
+facebookRouter.route('/getDetail').get((req, res) => {
+   FacebookController.getDetail();
+   //console.log("routes >> "+ text);
+   //(text)
+})
+
 
 //service start
 app.listen(port, () => {
