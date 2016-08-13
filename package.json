@@ -4,7 +4,7 @@
   "description": "",
   "main": "routes.js",
   "scripts": {
-    "start": "node node_modules/.bin/babel-node routes.js"
+    "start": "node_modules/.bin/babel-node ./routes.js"
   },
   "author": "",
   "license": "ISC",
