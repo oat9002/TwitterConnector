@@ -45,10 +45,13 @@ facebookRouter.route('/getDetail').get((req, res) => {
    FacebookController.getDetail(function(message){
       res.send(message);
    });
-   //console.log("routes >> "+ text);
-   //(text)
 })
 
+facebookRouter.route('/getFeed').get((req, res) => {
+   FacebookController.getFeed(function(message){
+      res.send(message);
+   });
+})
 
 //service start
 app.listen(port, () => {
