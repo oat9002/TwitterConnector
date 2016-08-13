@@ -19,10 +19,11 @@ export function getDetail() {
 }
 
 export function getFeed(fn) {
+
+    var params = {fields: "message",since: since}
    //for(var userID of userIDs){
-        graph.get("CIEatKMITL"+"/feed"+"?since="+since, function(err, res) {
+        graph.get("CIEatKMITL"+"/feed",params, function(err, res) {
             fn(res);
-            
         });
        // console.log(fn);
    //}

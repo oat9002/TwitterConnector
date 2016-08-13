@@ -48,8 +48,14 @@ facebookRouter.route('/getDetail').get((req, res) => {
 })
 
 facebookRouter.route('/getFeed').get((req, res) => {
+  
    FacebookController.getFeed(function(message){
-      res.send(message);
+      var body=""
+      for(var data of message.data){
+        if(data.message)
+          body = body+"<br> -"+data.message
+      }
+        res.send(body);
    });
 })
 
