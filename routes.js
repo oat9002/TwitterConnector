@@ -42,7 +42,9 @@ facebookRouter.route('/').get((req, res) => {
 })
 
 facebookRouter.route('/getDetail').get((req, res) => {
-   FacebookController.getDetail();
+   FacebookController.getDetail(function(message){
+      res.send(message);
+   });
    //console.log("routes >> "+ text);
    //(text)
 })

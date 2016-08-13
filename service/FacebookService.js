@@ -10,12 +10,16 @@ export function getDetail() {
     });
 }
 
-export function getFeed() {
+export function getFeed(userId,fn) {
      graph.get("501403786556532/feed", function(err, res) {
-        console.log("feed >> "); 
-        for(var feed of res.data){
-            console.log(feed.id+" - "+feed.message);
-        }
-        
+        fn(res);
     });
 }
+
+
+// function foo(address, fn){
+//   geocoder.geocode( { 'address': address}, function(results, status) {
+//      fn(results[0].geometry.location); 
+//   });
+// }
+
