@@ -48,4 +48,10 @@ facebookRouter.route('/getFeed').get((req, res) => {
    
 })
 
+facebookRouter.route('/updateDB').get((req, res) => {
+    FacebookService.updateDB()
+    res.send("update complete.")
+      
+})
+
 export default facebookRouter
