@@ -17,28 +17,34 @@ facebookRouter.route('/').get((req, res) => {
 
 facebookRouter.route('/getDetail').get((req, res) => {
 
-   var detail
-   //for(var user of userIDs){
+   var detail = []
+   for(var user of userIDs){
       FacebookService.getDetail(user)
       .then(result =>{
           detail.push(result)
+
+          if(detail.length == userIDs.length){
+              res.send(detail)
+          }
       })
-   //}
+   }
    
 })
 
 facebookRouter.route('/getFeed').get((req, res) => {
   
-  FacebookService.getFeed("CIEatKMITL",since,until)
-   .then(result =>{
-      var body=""
-      for(var data of result.data){
-        if(data.message)
-          body = body+"<br> -"+data.message
-      }
-        res.send(body)
-   })
+  var feed = []
+  for(var user of userIDs){
+      FacebookService.getFeed(user,since,until)
+      .then(result =>{
+          feed.push(result)
+          if(feed.length == userIDs.length){          
+             res.send(feed)
+          }
+      })
       
+  }
+
    
 })
 
