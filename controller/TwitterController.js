@@ -16,10 +16,15 @@ twitterRouter.route('/tweet').post((req, res) => {
   res.send(TwitterService.tweet(req.body.status))
 })
 
-twitterRouter.route('/search').post(function*(req, res) {
-  let result = yield TwitterService.search(req.body.q, req.body.count)
-  console.log('result', result);
-  // res.send(result)
+twitterRouter.route('/search').post((req, res) => {
+  TwitterService.search(req.body.q, req.body.count)
+    .then(result => {
+      res.send(result)
+    })
+    .catch(err => {
+      console.log(err.stack);
+    })
+
 })
 
 export default twitterRouter
