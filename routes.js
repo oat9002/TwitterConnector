@@ -3,9 +3,12 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import twitterRouter from './controller/TwitterController'
+import facebookRouter from './controller/FacebookController'
+
 
 const port = process.env.port || 7777
 let app = express()
+
 
 // parse application/json
 app.use(bodyParser.json())
@@ -14,7 +17,13 @@ app.use(bodyParser.urlencoded({
 }))
 
 //parent url
+app.route('/').get((req, res) => {
+  res.send('<h1>Social REST Api</h1><br>/twitter<br>/facebook')
+})
+
 app.use('/twitter', twitterRouter)
+app.use('/facebook', facebookRouter)
+
 
 //service start
 app.listen(port, () => {
