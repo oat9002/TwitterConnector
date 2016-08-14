@@ -19,7 +19,16 @@ twitterRouter.route('/tweet').post((req, res) => {
 twitterRouter.route('/search').post((req, res) => {
   TwitterService.search(req.body.q, req.body.count)
     .then(result => {
-      res.send(result)
+      let data = {}
+      let arrData = []
+      result.statuses.forEach(item => {
+        data.text = item.text
+        data.created_at = item.created_at
+        arrData.push(data)
+      })
+      let jsonReturn = {}
+      jsonReturn.statuses = arrData
+      res.send(jsonReturn)
     })
     .catch(err => {
       console.log(err.stack);

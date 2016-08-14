@@ -4,7 +4,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import twitterRouter from './controller/TwitterController'
 import facebookRouter from './controller/FacebookController'
-
+import { Twitter } from './model/Twitter'
 
 const port = process.env.port || 7777
 let app = express()
@@ -24,6 +24,18 @@ app.route('/').get((req, res) => {
 app.use('/twitter', twitterRouter)
 app.use('/facebook', facebookRouter)
 
+app.route('/save').get((req, res) => {
+  let twitter = Twitter.build({
+    text: 'test'
+  })
+  twitter.save()
+    .then(() => {
+      console.log('save complete');
+    })
+    .catch((err) => {
+      console.log(err.stack);
+    })
+})
 
 //service start
 app.listen(port, () => {
