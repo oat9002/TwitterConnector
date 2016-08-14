@@ -65,7 +65,7 @@ facebookRouter.route('/getMessage').get((req, res) => {
 })
 
 facebookRouter.route('/updateDB').get((req, res) => {
-    FacebookService.updateDB()
+    FacebookService.updateDB(req.query.since,req.query.until)
     res.send("done")
     
 })
