@@ -1,6 +1,9 @@
-import graph from 'fbgraph';
+import graph from 'fbgraph'
+import promise from 'bluebird'
 
-var access_token = "139610759813141|f928e2e59299981a997116c967a20b1d";
+promise.promisifyAll(graph)
+
+var access_token = "139610759813141|f928e2e59299981a997116c967a20b1d"
 graph.setAccessToken(access_token);
 
 var userIDs = ["CIEatKMITL","kmitl001","sorkmitl","1749829098634111","kmitl.engineer.inter","CE.KMITL"];
@@ -18,22 +21,20 @@ export function getDetail() {
      
 }
 
-export function getFeed(fn) {
+export function getFeed() {
 
     var params = {fields: "message",since: since}
    //for(var userID of userIDs){
-        graph.get("CIEatKMITL"+"/feed",params, function(err, res) {
-            fn(res);
-        });
+    return graph.getAsync("CIEatKMITL"+"/feed",params)
+    .then(result => {
+        //console.log(result)
+        return result
+    })
+    .catch(err => {
+        console.log('getFeed error :',err.stack)
+    })
        // console.log(fn);
    //}
      
 }
-
-
-// function foo(address, fn){
-//   geocoder.geocode( { 'address': address}, function(results, status) {
-//      fn(results[0].geometry.location); 
-//   });
-// }
 
