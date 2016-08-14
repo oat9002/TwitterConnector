@@ -9,12 +9,13 @@ var since="2016-08-01";
 var until="";
 
 export function getDetail() {
-    for(var userID of userIDs){
-        graph.get(userID, function(err, res) {
-            console.log("detail >> "); 
-            console.log(res);
-        });
-    }
+
+    return new Promise((resolve) =>{
+        graph.get("CIEatKMITL", (err, res) => {
+            resolve(res);
+        })
+    })
+
      
 }
 
@@ -22,9 +23,9 @@ export function getFeed() {
 
     var params = {fields: "message",since: since}
     
-    return new Promise(function(resolve,reject){
+    return new Promise((resolve,reject) => {
 
-        graph.get("CIEatKMITL"+"/feed",params,function(err ,res){
+        graph.get("CIEatKMITL"+"/feed",params,(err ,res) =>{
                 resolve(res)
         })
        

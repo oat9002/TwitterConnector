@@ -10,14 +10,14 @@ facebookRouter.route('/').get((req, res) => {
 })
 
 facebookRouter.route('/getDetail').get((req, res) => {
-   FacebookService.getDetail(function(message){
-      res.send(message);
-   });
+   FacebookService.getDetail()
+   .then(result =>{
+      res.send(result);
+   })
 })
 
 facebookRouter.route('/getFeed').get((req, res) => {
   
-   
   FacebookService.getFeed()
    .then(result =>{
       var body=""
