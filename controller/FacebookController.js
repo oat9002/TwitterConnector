@@ -41,7 +41,7 @@ facebookRouter.route('/getMessage').get((req, res) => {
       Facebook.findAll({
           attributes: ['message'],
           where: {
-            userID: "1749829098634111"
+            userID: req.query.userID
           }
       }).then( (feeds) =>{
           for(var feed of feeds){
