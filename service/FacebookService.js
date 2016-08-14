@@ -43,19 +43,23 @@ export function updateDB(){
 
             for(var data of result.data){
                 if(data.message){
-                    let facebook = Facebook.build({
-                        userID: data.id.substring(0, 15),
-                        postID: data.id,
-                        message: data.message,
-                        postCreatedTime: data.created_time,
+                    Facebook.findOrCreate({
+                        where:{
+                            postID: data.id
+                        },
+                        defaults:{
+                            userID: data.id.substring(0,15),
+                            postID: data.id,
+                            message: data.message,
+                            postCreatedTime: data.created_time
+                        }
                     })
-                    facebook.save()
-                        .then(() => {
-                            console.log('save complete');
-                        })
-                        .catch((err) => {
-                            console.log(err.stack);
-                        })
+                    .then(() => {
+                        console.log('save complete');
+                    })
+                    .catch((err) => {
+                        console.log(err.stack);
+                    })
                 }
             }
         })
