@@ -20,16 +20,19 @@ facebookRouter.route('/').get((req, res) => {
 facebookRouter.route('/getDetail').get((req, res) => {
 
    var detail = []
-   for(var user of userIDs){
-      FacebookService.getDetail(user)
-      .then(result =>{
-          detail.push(result)
-
-          if(detail.length == userIDs.length){
-              res.send(detail)
-          }
-      })
-   }
+   var detailstr = ""
+   Facebook.findAll({
+        attributes: ['userID'],
+        group: ['userID']
+        
+    }).then( (feeds) =>{
+        for(var feed of feeds){
+            detail.push(feed.dataValues.userID)
+            detailstr += "<br>-"+feed.dataValues.userID
+        }
+    }).then(() => {
+        res.send(detailstr)
+    })
    
 })
 
@@ -37,21 +40,19 @@ facebookRouter.route('/getMessage').get((req, res) => {
   
   var messages = []
   var messagestr = ""
- // for(var user of userIDs){
-      Facebook.findAll({
-          attributes: ['message'],
-          where: {
-            userID: req.query.userID
-          }
-      }).then( (feeds) =>{
-          for(var feed of feeds){
-                messages.push(feed.dataValues.message)
-                messagestr += "<br>-"+feed.dataValues.message
-          }
-      }).then(() => {
-          res.send(messagestr)
-      })
-  //}
+    Facebook.findAll({
+        attributes: ['message'],
+        where: {
+        userID: req.query.userID
+        }
+    }).then( (feeds) =>{
+        for(var feed of feeds){
+            messages.push(feed.dataValues.message)
+            messagestr += "<br>-"+feed.dataValues.message
+        }
+    }).then(() => {
+        res.send(messagestr)
+    })
 
    
 })
