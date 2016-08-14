@@ -24,19 +24,6 @@ app.route('/').get((req, res) => {
 app.use('/twitter', twitterRouter)
 app.use('/facebook', facebookRouter)
 
-app.route('/save').get((req, res) => {
-  let twitter = Twitter.build({
-    text: 'test'
-  })
-  twitter.save()
-    .then(() => {
-      console.log('save complete');
-    })
-    .catch((err) => {
-      console.log(err.stack);
-    })
-})
-
 //service start
 app.listen(port, () => {
   console.log('Starting node.js on port ' + port)

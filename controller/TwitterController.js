@@ -16,14 +16,14 @@ twitterRouter.route('/tweet').post((req, res) => {
   res.send(TwitterService.tweet(req.body.status))
 })
 
-twitterRouter.route('/search').post((req, res) => {
-  TwitterService.search(req.body.q, req.body.count)
+twitterRouter.route('/searchTweet').post((req, res) => {
+  TwitterService.searchTweet(req.body.q)
     .then(result => {
       let data = {}
       let arrData = []
       result.statuses.forEach(item => {
         data.text = item.text
-        data.created_at = item.created_at
+        data.textCreatedDate = item.created_at
         arrData.push(data)
       })
       let jsonReturn = {}
@@ -33,7 +33,27 @@ twitterRouter.route('/search').post((req, res) => {
     .catch(err => {
       console.log(err.stack);
     })
+})
 
+twitterRouter.route('/searchTweetNearby').post((req, res) => {
+  TwitterService.searchTweetNearby(req.body.lat, req.body.lng, req.body.since)
+    .then(result => {
+      let data = {}
+      let arrData = []
+      result.statuses.forEach(item => {
+        data.text = item.text
+        data.textCreatedDate = item.created_at
+        data.latitude = req.body.lat
+        data.longitude = req.body.lng
+        arrData.push(data)
+      })
+      let jsonReturn = {}
+      jsonReturn.statuses = arrData
+      if(jsonReturn.statuses.length != 0) {
+        TwitterService.saveTweet(jsonReturn.statuses)
+      }
+      res.send(jsonReturn)
+    })
 })
 
 export default twitterRouter
