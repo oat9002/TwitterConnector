@@ -7,10 +7,6 @@ import { Facebook } from '../model/Facebook'
 
 let facebookRouter = express.Router()
 
-var userIDs = ["CIEatKMITL","kmitl001","sorkmitl","1749829098634111","kmitl.engineer.inter","CE.KMITL"];
-var limit="";
-var since="2016-08-01";
-var until="";
 
 
 facebookRouter.route('/').get((req, res) => {
