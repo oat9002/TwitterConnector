@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
 
 //parent url
 app.route('/').get((req, res) => {
-  res.send('<h1>Social REST Api</h1><br>/twitter<br>/facebook')
+  res.send('<h1>Social REST Api</h1><ul><li>/twitter</li><li>/facebook</li></ul>')
 })
 
 app.use('/twitter', twitterRouter)

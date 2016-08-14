@@ -12,7 +12,7 @@ var until="";
 
 
 facebookRouter.route('/').get((req, res) => {
-  res.send('<h1>Hello Facebook</h1>')
+  res.send('<h1>Facebook Api</h1><ul><li>/getDetail</li><li>/getFeed</li></ul>')
 })
 
 facebookRouter.route('/getDetail').get((req, res) => {
