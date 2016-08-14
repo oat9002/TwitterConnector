@@ -9,9 +9,21 @@ let T = new Twit({
 })
 
 export function tweet(status) {
-  T.post('statuses/update', { status: status }, (err, data, response) => {
-    console.log('err: ' + err)
-    console.log('data: ' + data);
-    console.log('response: ' + response);
-  })
+  T.post('statuses/update', { status: status })
+    .then(result => {
+      return result.response
+    })
+    .catch(err => {
+      console.log('tweet error', err.stack);
+    })
+}
+
+export function search(q, count) {
+  T.get('search/tweets', { q: q, count: count})
+    .then(result => {
+      return result.data
+    })
+    .catch(err => {
+      console.log('search error', err.stack);
+    })
 }
