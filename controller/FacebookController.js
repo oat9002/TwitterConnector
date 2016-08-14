@@ -2,6 +2,8 @@
 import express from 'express'
 import promise from 'bluebird'
 import * as FacebookService from '../service/FacebookService'
+import { Facebook } from '../model/Facebook'
+
 
 let facebookRouter = express.Router()
 
@@ -31,27 +33,33 @@ facebookRouter.route('/getDetail').get((req, res) => {
    
 })
 
-facebookRouter.route('/getFeed').get((req, res) => {
+facebookRouter.route('/getMessage').get((req, res) => {
   
-  var feed = []
-  for(var user of userIDs){
-      FacebookService.getFeed(user,since,until)
-      .then(result =>{
-          feed.push(result)
-          if(feed.length == userIDs.length){          
-             res.send(feed)
+  var messages = []
+  var messagestr = ""
+ // for(var user of userIDs){
+      Facebook.findAll({
+          attributes: ['message'],
+          where: {
+            userID: "1749829098634111"
           }
+      }).then( (feeds) =>{
+          for(var feed of feeds){
+                messages.push(feed.dataValues.message)
+                messagestr += "<br>-"+feed.dataValues.message
+          }
+      }).then(() => {
+          res.send(messagestr)
       })
-      
-  }
+  //}
 
    
 })
 
 facebookRouter.route('/updateDB').get((req, res) => {
     FacebookService.updateDB()
-    res.send("update complete.")
-      
+    res.send("done")
+    
 })
 
 export default facebookRouter

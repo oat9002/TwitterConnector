@@ -36,7 +36,7 @@ export function getFeed(userID,since,until) {
 }
 
 export function updateDB(){
-
+    
     for(var userID of userIDs){
         getFeed(userID,since,until)
         .then( result => {
@@ -48,7 +48,7 @@ export function updateDB(){
                             postID: data.id
                         },
                         defaults:{
-                            userID: data.id.substring(0,15),
+                            userID: data.id.substring(0,data.id.indexOf("_")),
                             postID: data.id,
                             message: data.message,
                             postCreatedTime: data.created_time
@@ -64,7 +64,5 @@ export function updateDB(){
             }
         })
     }
-    
-
     
 }
