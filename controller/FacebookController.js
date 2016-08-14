@@ -17,7 +17,14 @@ facebookRouter.route('/').get((req, res) => {
   res.send('<h1>Facebook Api</h1><ul><li>/getDetail</li><li>/getFeed</li></ul>')
 })
 
-facebookRouter.route('/getDetail').get((req, res) => {
+facebookRouter.route('/addPage').get((req, res) => {
+
+    FacebookService.addPage(req.query.pageID)
+    res.send("done")
+   
+})
+
+facebookRouter.route('/getUserID').get((req, res) => {
 
    var detail = []
    var detailstr = ""
@@ -60,6 +67,14 @@ facebookRouter.route('/getMessage').get((req, res) => {
 facebookRouter.route('/updateDB').get((req, res) => {
     FacebookService.updateDB()
     res.send("done")
+    
+})
+
+facebookRouter.route('/getPageID').get((req, res) => {
+    FacebookService.getPageID().then((pageID) =>{
+        res.send(pageID)
+    })
+    
     
 })
 

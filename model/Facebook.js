@@ -11,4 +11,12 @@ export const Facebook = sequelize.define('facebook', {
     freezeTableName: true 
 })
 
+export const PageID = sequelize.define('facebookUserID', {
+  userID: Sequelize.STRING,
+  name: Sequelize.STRING,
+}, {
+    timestamps: true,
+    freezeTableName: true 
+})
+
 
