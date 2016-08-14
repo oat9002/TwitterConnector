@@ -1,7 +1,4 @@
 import graph from 'fbgraph'
-import promise from 'bluebird'
-
-promise.promisifyAll(graph)
 
 var access_token = "139610759813141|f928e2e59299981a997116c967a20b1d"
 graph.setAccessToken(access_token);
@@ -24,17 +21,14 @@ export function getDetail() {
 export function getFeed() {
 
     var params = {fields: "message",since: since}
-   //for(var userID of userIDs){
-    return graph.getAsync("CIEatKMITL"+"/feed",params)
-    .then(result => {
-        //console.log(result)
-        return result
+    
+    return new Promise(function(resolve,reject){
+
+        graph.get("CIEatKMITL"+"/feed",params,function(err ,res){
+                resolve(res)
+        })
+       
     })
-    .catch(err => {
-        console.log('getFeed error :',err.stack)
-    })
-       // console.log(fn);
-   //}
      
 }
 

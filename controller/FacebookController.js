@@ -18,15 +18,15 @@ facebookRouter.route('/getDetail').get((req, res) => {
 facebookRouter.route('/getFeed').get((req, res) => {
   
    
-   console.log(FacebookService.getFeed())
-  //  .then(result =>{
-  //     var body=""
-  //     // for(var data of message.data){
-  //     //   if(data.message)
-  //     //     body = body+"<br> -"+data.message
-  //     // }
-  //       res.send(result)
-  //  })
+  FacebookService.getFeed()
+   .then(result =>{
+      var body=""
+      for(var data of result.data){
+        if(data.message)
+          body = body+"<br> -"+data.message
+      }
+        res.send(body)
+   })
       
    
 })
