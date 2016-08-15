@@ -38,20 +38,24 @@ twitterRouter.route('/searchTweet').post((req, res) => {
 twitterRouter.route('/searchTweetNearby').post((req, res) => {
   TwitterService.searchTweetNearby(req.body.lat, req.body.lng, req.body.since)
     .then(result => {
-      let data = {}
-      let arrData = []
-      result.statuses.forEach(item => {
+      // let data = {}
+      // data.result = result
+      // data.latitude = req.body.lat
+      // data.longitude = req.body.lng
+      // TwitterService.saveTweet(data)
+
+      let arrData = new Array(result.statuses.length)
+      result.statuses.forEach((item, index) => {
+        let data = {}
+        data.tweetID = item.id
         data.text = item.text
         data.textCreatedDate = item.created_at
         data.latitude = req.body.lat
         data.longitude = req.body.lng
-        arrData.push(data)
+        arrData[index] = data
       })
       let jsonReturn = {}
       jsonReturn.statuses = arrData
-      if(jsonReturn.statuses.length != 0) {
-        TwitterService.saveTweet(jsonReturn.statuses)
-      }
       res.send(jsonReturn)
     })
 })

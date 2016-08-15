@@ -1,4 +1,5 @@
 import Twit from 'twit'
+import { Twitter } from '../model/Twitter'
 
 let T = new Twit({
   consumer_key: 'eFroY0pfuCmbSf4OrwFckHDUY',
@@ -52,21 +53,20 @@ export function searchTweetNearby(lat, lng, since) {
   })
 }
 
-export function saveTweet(statuses) {
-  for(let item of statuses){
-    console.log(item);
-    Twitter.build({
+export function saveTweet(data) {
+   for(let item of data.result.statuses){
+    Twitter.create({
+      tweetID: item.id,
       text: item.text,
-      textCreatedDate: item.textCreatedDate,
-      latitude: item.latitude,
-      longitude: item.longitude
+      textCreatedDate: item.created_at,
+      latitude: data.latitude,
+      longitude: data.longitude
     })
-      .save()
       .then(() => {
         console.log('Save complete.');
       })
       .catch((err) => {
         console.log(err.stack);
       })
-  }
+   }
 }
