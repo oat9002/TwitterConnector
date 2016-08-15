@@ -2,50 +2,76 @@
 import express from 'express'
 import promise from 'bluebird'
 import * as FacebookService from '../service/FacebookService'
+import { Facebook } from '../model/Facebook'
+
 
 let facebookRouter = express.Router()
 
-var userIDs = ["CIEatKMITL","kmitl001","sorkmitl","1749829098634111","kmitl.engineer.inter","CE.KMITL"];
-var limit="";
-var since="2016-08-01";
-var until="";
 
 
 facebookRouter.route('/').get((req, res) => {
   res.send('<h1>Facebook Api</h1><ul><li>/getDetail</li><li>/getFeed</li></ul>')
 })
 
-facebookRouter.route('/getDetail').get((req, res) => {
+facebookRouter.route('/addPage').get((req, res) => {
 
-   var detail = []
-   for(var user of userIDs){
-      FacebookService.getDetail(user)
-      .then(result =>{
-          detail.push(result)
-
-          if(detail.length == userIDs.length){
-              res.send(detail)
-          }
-      })
-   }
+    FacebookService.addPage(req.query.pageID)
+    res.send("done")
    
 })
 
-facebookRouter.route('/getFeed').get((req, res) => {
+facebookRouter.route('/getUserID').get((req, res) => {
+
+   var detail = []
+   var detailstr = ""
+   Facebook.findAll({
+        attributes: ['userID'],
+        group: ['userID']
+        
+    }).then( (feeds) =>{
+        for(var feed of feeds){
+            detail.push(feed.dataValues.userID)
+            detailstr += "<br>-"+feed.dataValues.userID
+        }
+    }).then(() => {
+        res.send(detailstr)
+    })
+   
+})
+
+facebookRouter.route('/getMessage').get((req, res) => {
   
-  var feed = []
-  for(var user of userIDs){
-      FacebookService.getFeed(user,since,until)
-      .then(result =>{
-          feed.push(result)
-          if(feed.length == userIDs.length){          
-             res.send(feed)
-          }
-      })
-      
-  }
+  var messages = []
+  var messagestr = ""
+    Facebook.findAll({
+        attributes: ['message'],
+        where: {
+        userID: req.query.userID
+        }
+    }).then( (feeds) =>{
+        for(var feed of feeds){
+            messages.push(feed.dataValues.message)
+            messagestr += "<br>-"+feed.dataValues.message
+        }
+    }).then(() => {
+        res.send(messagestr)
+    })
 
    
+})
+
+facebookRouter.route('/updateDB').get((req, res) => {
+    FacebookService.updateDB(req.query.since,req.query.until)
+    res.send("done")
+    
+})
+
+facebookRouter.route('/getPageID').get((req, res) => {
+    FacebookService.getPageID().then((pageID) =>{
+        res.send(pageID)
+    })
+    
+    
 })
 
 export default facebookRouter
