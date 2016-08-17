@@ -19,12 +19,12 @@ twitterRouter.route('/tweet').post((req, res) => {
 twitterRouter.route('/searchTweet').post((req, res) => {
   TwitterService.searchTweet(req.body.q)
     .then(result => {
-      let data = {}
-      let arrData = []
-      result.statuses.forEach(item => {
+      let arrData = new Array(result.statuses.length)
+      result.statuses.forEach((item, index) =>
+        let data = {}
         data.text = item.text
         data.textCreatedDate = item.created_at
-        arrData.push(data)
+        arrData[index] = data
       })
       let jsonReturn = {}
       jsonReturn.statuses = arrData
