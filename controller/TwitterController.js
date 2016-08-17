@@ -20,7 +20,7 @@ twitterRouter.route('/searchTweet').post((req, res) => {
   TwitterService.searchTweet(req.body.q)
     .then(result => {
       let arrData = new Array(result.statuses.length)
-      result.statuses.forEach((item, index) =>
+      result.statuses.forEach((item, index) => {
         let data = {}
         data.text = item.text
         data.textCreatedDate = item.created_at
