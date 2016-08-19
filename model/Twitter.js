@@ -2,15 +2,12 @@ import Sequelize from 'sequelize'
 import { sequelize } from '../db'
 
 export const Twitter = sequelize.define('twitter', {
-  id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true
-  },
+  tweetID : Sequelize.STRING,
   text: Sequelize.STRING,
   textCreatedDate: Sequelize.DATE,
-  createdAt: Sequelize.DATE,
-  updatedAt: Sequelize.DATE,
-  timestamps: true
+  latitude: Sequelize.DOUBLE,
+  longitude: Sequelize.DOUBLE,
 }, {
-  freezeTableName: true // Model tableName will be the same as the model name
+  freezeTableName: true,
+  timestamps: true
 })

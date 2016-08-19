@@ -1,4 +1,5 @@
 import Twit from 'twit'
+import { Twitter } from '../model/Twitter'
 
 let T = new Twit({
   consumer_key: 'eFroY0pfuCmbSf4OrwFckHDUY',
@@ -22,9 +23,9 @@ export function tweet(status) {
 }
 
 
-export function search(q, count) {
+export function searchTweet(q) {
   return new Promise((resolve, reject) => {
-    T.get('search/tweets', { q: q, count: count}, (err, data, response) => {
+    T.get('search/tweets', { q: q}, (err, data, response) => {
       if(err) {
         reject(err)
       }
@@ -33,4 +34,39 @@ export function search(q, count) {
       }
     })
   })
+}
+
+function addCoordinate(lat, lng) {
+
+}
+
+export function searchTweetNearby(lat, lng, since) {
+  return new Promise((resolve, reject) => {
+    T.get('search/tweets', { q: "since:" + since, geocode: "\"" + lat + "," + lng + "," + "1km\"", result_type: 'mixed' }, (err, data, response) => {
+      if(err) {
+        reject(err)
+      }
+      else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export function saveTweet(data) {
+   for(let item of data.result.statuses){
+    Twitter.create({
+      tweetID: item.id,
+      text: item.text,
+      textCreatedDate: item.created_at,
+      latitude: data.latitude,
+      longitude: data.longitude
+    })
+      .then(() => {
+        console.log('Save complete.');
+      })
+      .catch((err) => {
+        console.log(err.stack);
+      })
+   }
 }
