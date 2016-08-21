@@ -38,12 +38,6 @@ twitterRouter.route('/searchTweet').post((req, res) => {
 twitterRouter.route('/searchTweetNearby').post((req, res) => {
   TwitterService.searchTweetNearby(req.body.lat, req.body.lng, req.body.since)
     .then(result => {
-      // let data = {}
-      // data.result = result
-      // data.latitude = req.body.lat
-      // data.longitude = req.body.lng
-      // TwitterService.saveTweet(data)
-
       let arrData = new Array(result.statuses.length)
       result.statuses.forEach((item, index) => {
         let data = {}
@@ -58,6 +52,10 @@ twitterRouter.route('/searchTweetNearby').post((req, res) => {
       jsonReturn.statuses = arrData
       res.send(jsonReturn)
     })
+})
+
+twitterRouter.route('/addQuery').post((req, res) => {
+  TwitterService.addQuery(req.query)
 })
 
 export default twitterRouter

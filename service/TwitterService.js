@@ -1,5 +1,8 @@
 import Twit from 'twit'
 import { db } from '../db'
+import cron from 'cron'
+
+let cronJob = cron.CronJob
 
 let T = new Twit({
   consumer_key: 'eFroY0pfuCmbSf4OrwFckHDUY',
@@ -30,8 +33,6 @@ export function searchTweet(q) {
         reject(err)
       }
       else {
-        saveTweet(data)
-        testQuery()
         resolve(data)
       }
     })
@@ -65,20 +66,49 @@ function saveTweet(data) {
      db.twitter.save(tweet, (err) => {
        console.log(err)
      })
-    // Twitter.create({
-    //   tweetID: item.id,
-    //   text: item.text,
-    //   textCreatedDate: item.created_at,
-    //   latitude: data.latitude,
-    //   longitude: data.longitude
-    // })
-    //   .then(() => {
-    //     console.log('Save complete.');
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.stack);
-    //   })
    }
+}
+
+//save tweets every 30 minutes
+let saveTweetJob = new cronJob('00 30 * * * *', () => {
+  getAllQuery().then((docs) => {
+    docs.forEach((item) => {
+      T.get('search/tweets', { q: item.query}, (err, data) => {
+        if(err) {
+          console.log(err.stack)
+        }
+        else {
+          saveTweet(data)
+          testQuery()
+        }
+      })
+    },
+    () => {
+      console.log('saveTweetJob has stopped')
+    },
+    true
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+)
+
+export function addQuery(query) {
+  db.tweetQuery.save({ query: query })
+}
+
+function getAllQuery() {
+  return new Promise((resolve, reject) => {
+    db.tweetQuery.find((err, docs) => {
+      if(err) {
+        reject(reject)
+      }
+      else {
+        resolve(docs)
+      }
+    })
+  })
 }
 
 function testQuery() {
