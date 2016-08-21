@@ -1,5 +1,8 @@
 import Twit from 'twit'
 import { db } from '../db'
+import cron from 'cron'
+
+let cronJob = cron.CronJob
 
 let T = new Twit({
   consumer_key: 'eFroY0pfuCmbSf4OrwFckHDUY',
@@ -31,7 +34,6 @@ export function searchTweet(q) {
       }
       else {
         saveTweet(data)
-        testQuery()
         resolve(data)
       }
     })
@@ -56,33 +58,80 @@ export function searchTweetNearby(lat, lng, since) {
 }
 
 function saveTweet(data) {
-   for(let item of data.statuses) {
-     let tweet = {}
-     tweet.tweetID = item.id
-     tweet.text = item.text
-     tweet.textCreatedDate = item.created_at
-     console.log(tweet)
-     db.twitter.save(tweet, (err) => {
-       console.log(err)
-     })
-    // Twitter.create({
-    //   tweetID: item.id,
-    //   text: item.text,
-    //   textCreatedDate: item.created_at,
-    //   latitude: data.latitude,
-    //   longitude: data.longitude
-    // })
-    //   .then(() => {
-    //     console.log('Save complete.');
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.stack);
-    //   })
-   }
+  data.statuses.forEach(item => {
+   db.twitter.findOne({tweetID: item.tweetID}, (err, document) => {
+     if(!document) {
+       let tweet = {}
+       tweet.tweetID = item.id
+       tweet.text = item.text
+       tweet.textCreatedDate = item.created_at
+       db.twitter.insert(tweet, (err) => {
+         console.log(err)
+       })
+     }
+   })
+ })
+ console.log('Tweets have been saved');
 }
 
-function testQuery() {
+//save tweets every 30 minutes
+let saveTweetJob = new cronJob('* */30 * * * *', () => {
+  getAllQuery().then((docs) => {
+    docs.forEach((item) => {
+      T.get('search/tweets', { q: item.query}, (err, data) => {
+        if(err) {
+          console.log(err.stack)
+        }
+        else {
+          saveTweet(data)
+          testTwitterQuery()
+        }
+      })
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+},
+() => {
+  console.log('saveTweetJob has stopped')
+},
+true
+)
+
+export function addQuery(query) {
+  db.tweetQuery.insert({ query: query }, (err) => {
+    console.log(err)
+  })
+  testTweetQuery()
+}
+
+function getAllQuery() {
+  return new Promise((resolve, reject) => {
+    db.tweetQuery.find((err, docs) => {
+      if(err) {
+        reject(reject)
+      }
+      else {
+        resolve(docs)
+      }
+    })
+  })
+}
+
+function testTwitterQuery() {
   db.twitter.find((err, docs) => {
+    if(err) {
+      console.log(err)
+    }
+    else {
+      console.log(docs)
+    }
+  })
+}
+
+function testTweetQuery() {
+  db.tweetQuery.find((err, docs) => {
     if(err) {
       console.log(err)
     }
