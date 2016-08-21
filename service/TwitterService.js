@@ -1,5 +1,5 @@
 import Twit from 'twit'
-import { Twitter } from '../model/Twitter'
+import { db } from '../db'
 
 let T = new Twit({
   consumer_key: 'eFroY0pfuCmbSf4OrwFckHDUY',
@@ -30,6 +30,8 @@ export function searchTweet(q) {
         reject(err)
       }
       else {
+        saveTweet(data)
+        testQuery()
         resolve(data)
       }
     })
@@ -53,20 +55,39 @@ export function searchTweetNearby(lat, lng, since) {
   })
 }
 
-export function saveTweet(data) {
-   for(let item of data.result.statuses){
-    Twitter.create({
-      tweetID: item.id,
-      text: item.text,
-      textCreatedDate: item.created_at,
-      latitude: data.latitude,
-      longitude: data.longitude
-    })
-      .then(() => {
-        console.log('Save complete.');
-      })
-      .catch((err) => {
-        console.log(err.stack);
-      })
+function saveTweet(data) {
+   for(let item of data.statuses) {
+     let tweet = {}
+     tweet.tweetID = item.id
+     tweet.text = item.text
+     tweet.textCreatedDate = item.created_at
+     console.log(tweet)
+     db.twitter.save(tweet, (err) => {
+       console.log(err)
+     })
+    // Twitter.create({
+    //   tweetID: item.id,
+    //   text: item.text,
+    //   textCreatedDate: item.created_at,
+    //   latitude: data.latitude,
+    //   longitude: data.longitude
+    // })
+    //   .then(() => {
+    //     console.log('Save complete.');
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.stack);
+    //   })
    }
+}
+
+function testQuery() {
+  db.twitter.find((err, docs) => {
+    if(err) {
+      console.log(err)
+    }
+    else {
+      console.log(docs)
+    }
+  })
 }
