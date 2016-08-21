@@ -65,26 +65,27 @@ function saveTweet(data) {
        tweet.tweetID = item.id
        tweet.text = item.text
        tweet.textCreatedDate = item.created_at
-       db.twitter.insert(tweet, (err) => {
-         console.log(err)
+       db.twitter.insert(tweet, err => {
+         if(err) {
+           console.log(err)
+         }
        })
      }
    })
  })
- console.log('Tweets have been saved');
+ console.log('Tweets have been saved')
 }
 
 //save tweets every 30 minutes
 let saveTweetJob = new cronJob('* */30 * * * *', () => {
-  getAllQuery().then((docs) => {
-    docs.forEach((item) => {
+  getAllQuery().then(docs => {
+    docs.forEach(item => {
       T.get('search/tweets', { q: item.query}, (err, data) => {
         if(err) {
           console.log(err.stack)
         }
         else {
           saveTweet(data)
-          testTwitterQuery()
         }
       })
     })
@@ -100,8 +101,10 @@ true
 )
 
 export function addQuery(query) {
-  db.tweetQuery.insert({ query: query }, (err) => {
-    console.log(err)
+  db.tweetQuery.insert({ query: query }, err => {
+    if(err) {
+      console.log(err)
+    }
   })
   testTweetQuery()
 }
