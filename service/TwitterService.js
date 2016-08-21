@@ -33,6 +33,7 @@ export function searchTweet(q) {
         reject(err)
       }
       else {
+        saveTweet(data)
         resolve(data)
       }
     })
@@ -57,20 +58,24 @@ export function searchTweetNearby(lat, lng, since) {
 }
 
 function saveTweet(data) {
-   for(let item of data.statuses) {
-     let tweet = {}
-     tweet.tweetID = item.id
-     tweet.text = item.text
-     tweet.textCreatedDate = item.created_at
-     console.log(tweet)
-     db.twitter.save(tweet, (err) => {
-       console.log(err)
-     })
-   }
+  data.statuses.forEach(item => {
+   db.twitter.findOne({tweetID: item.tweetID}, (err, document) => {
+     if(!document) {
+       let tweet = {}
+       tweet.tweetID = item.id
+       tweet.text = item.text
+       tweet.textCreatedDate = item.created_at
+       db.twitter.insert(tweet, (err) => {
+         console.log(err)
+       })
+     }
+   })
+ })
+ console.log('Tweets have been saved');
 }
 
 //save tweets every 30 minutes
-let saveTweetJob = new cronJob('00 30 * * * *', () => {
+let saveTweetJob = new cronJob('* */30 * * * *', () => {
   getAllQuery().then((docs) => {
     docs.forEach((item) => {
       T.get('search/tweets', { q: item.query}, (err, data) => {
@@ -79,23 +84,26 @@ let saveTweetJob = new cronJob('00 30 * * * *', () => {
         }
         else {
           saveTweet(data)
-          testQuery()
+          testTwitterQuery()
         }
       })
-    },
-    () => {
-      console.log('saveTweetJob has stopped')
-    },
-    true
     })
   })
   .catch((err) => {
     console.log(err)
   })
+},
+() => {
+  console.log('saveTweetJob has stopped')
+},
+true
 )
 
 export function addQuery(query) {
-  db.tweetQuery.save({ query: query })
+  db.tweetQuery.insert({ query: query }, (err) => {
+    console.log(err)
+  })
+  testTweetQuery()
 }
 
 function getAllQuery() {
@@ -111,8 +119,19 @@ function getAllQuery() {
   })
 }
 
-function testQuery() {
+function testTwitterQuery() {
   db.twitter.find((err, docs) => {
+    if(err) {
+      console.log(err)
+    }
+    else {
+      console.log(docs)
+    }
+  })
+}
+
+function testTweetQuery() {
+  db.tweetQuery.find((err, docs) => {
     if(err) {
       console.log(err)
     }

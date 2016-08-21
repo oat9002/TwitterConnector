@@ -55,7 +55,7 @@ twitterRouter.route('/searchTweetNearby').post((req, res) => {
 })
 
 twitterRouter.route('/addQuery').post((req, res) => {
-  TwitterService.addQuery(req.query)
+  TwitterService.addQuery(req.body.query)
 })
 
 export default twitterRouter
