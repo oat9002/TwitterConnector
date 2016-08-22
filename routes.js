@@ -3,7 +3,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import twitterRouter from './controller/TwitterController'
-import facebookRouter from './controller/FacebookController'
 import { Twitter } from './model/Twitter'
 
 
@@ -23,7 +22,6 @@ app.route('/').get((req, res) => {
 })
 
 app.use('/twitter', twitterRouter)
-app.use('/facebook', facebookRouter)
 
 //service start
 app.listen(port, () => {

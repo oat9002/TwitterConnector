@@ -143,3 +143,16 @@ function testTweetQuery() {
     }
   })
 }
+
+export function getAllTweet() {
+  return new Promise((resolve, reject) => {
+    db.twitter.find((err, docs) => {
+      if(err) {
+        reject(err)
+      }
+      else {
+        resolve(docs)
+      }
+    })
+  })
+}

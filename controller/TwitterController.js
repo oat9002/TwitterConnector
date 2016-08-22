@@ -58,4 +58,16 @@ twitterRouter.route('/addQuery').post((req, res) => {
   TwitterService.addQuery(req.body.query)
 })
 
+twitterRouter.route('/getAllTweet').get((req, res) => {
+  TwitterService.getAllTweet().then(docs => {
+    res.send(docs)
+  })
+})
+
+twitterRouter.route('/countTweet').get((req, res) => {
+  TwitterService.getAllTweet().then(docs => {
+    res.send({count: docs.length})
+  })
+})
+
 export default twitterRouter
