@@ -76,8 +76,8 @@ function saveTweet(data) {
  console.log('Tweets have been saved')
 }
 
-//save tweets every 30 minutes
-let saveTweetJob = new cronJob('* */30 * * * *', () => {
+// save tweets every 15 minutes
+let saveTweetJob = new cronJob('0 */15 * * * *', () => {
   getAllQuery().then(docs => {
     docs.forEach(item => {
       T.get('search/tweets', { q: item.query}, (err, data) => {
