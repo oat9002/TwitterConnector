@@ -1,11 +1,14 @@
+1
 "use strict";
 import express from 'express'
-import * as TwitterController from './controller/TwitterController'
 import bodyParser from 'body-parser'
+import twitterRouter from './controller/TwitterController'
+import { Twitter } from './model/Twitter'
+
 
 const port = process.env.port || 7777
 let app = express()
-let twitterRouter = express.Router()
+
 
 // parse application/json
 app.use(bodyParser.json())
@@ -14,19 +17,11 @@ app.use(bodyParser.urlencoded({
 }))
 
 //parent url
+app.route('/').get((req, res) => {
+  res.send('<h1>Social REST Api</h1><ul><li>/twitter</li><li>/facebook</li></ul>')
+})
+
 app.use('/twitter', twitterRouter)
-
-twitterRouter.route('/').get((req, res) => {
-  res.send('<h1>Hello Twitter</h1>')
-})
-
-twitterRouter.route('/index').get((req, res) => {
-  res.send('<h1>This is index page</h1>')
-})
-
-twitterRouter.route('/tweet').post((req, res) => {
-  TwitterController.tweet(req.body)
-})
 
 //service start
 app.listen(port, () => {
