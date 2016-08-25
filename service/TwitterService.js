@@ -59,13 +59,15 @@ export function searchTweetNearby(lat, lng, since) {
 
 function saveTweet(data) {
   data.statuses.forEach(item => {
-   db.tweet.findOne({tweetID: item.tweetID}, (err, document) => {
+   db.tweet.findOne({id: item.id}, (err, document) => {
      if(!document) {
        let tweet = item
        tweet.created_at = new Date(item.created_at)
        tweet.user.created_at = new Date(item.user.created_at)
-       tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
-       tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+       if(typeof tweet.retweeted_status != 'undefined') {
+         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
+         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+       }
        db.tweet.insert(tweet, err => {
          if(err) {
            console.log(err)

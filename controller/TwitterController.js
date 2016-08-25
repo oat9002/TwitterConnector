@@ -19,16 +19,7 @@ twitterRouter.route('/tweet').post((req, res) => {
 twitterRouter.route('/searchTweet').post((req, res) => {
   TwitterService.searchTweet(req.body.q)
     .then(result => {
-      let arrData = new Array(result.statuses.length)
-      result.statuses.forEach((item, index) => {
-        let data = {}
-        data.text = item.text
-        data.textCreatedDate = item.created_at
-        arrData[index] = data
-      })
-      let jsonReturn = {}
-      jsonReturn.statuses = arrData
-      res.send(jsonReturn)
+      res.send({tweets: result.statuses})
     })
     .catch(err => {
       console.log(err.stack);
@@ -38,19 +29,7 @@ twitterRouter.route('/searchTweet').post((req, res) => {
 twitterRouter.route('/searchTweetNearby').post((req, res) => {
   TwitterService.searchTweetNearby(req.body.lat, req.body.lng, req.body.since)
     .then(result => {
-      let arrData = new Array(result.statuses.length)
-      result.statuses.forEach((item, index) => {
-        let data = {}
-        data.tweetID = item.id
-        data.text = item.text
-        data.textCreatedDate = item.created_at
-        data.latitude = req.body.lat
-        data.longitude = req.body.lng
-        arrData[index] = data
-      })
-      let jsonReturn = {}
-      jsonReturn.statuses = arrData
-      res.send(jsonReturn)
+      res.send({tweets: result.statuses})
     })
 })
 
