@@ -28,7 +28,7 @@ export function tweet(status) {
 
 export function searchTweet(q) {
   return new Promise((resolve, reject) => {
-    T.get('search/tweets', { q: q}, (err, data, response) => {
+    T.get('search/tweets', { q: q, count: 100}, (err, data, response) => {
       if(err) {
         reject(err)
       }
@@ -59,13 +59,14 @@ export function searchTweetNearby(lat, lng, since) {
 
 function saveTweet(data) {
   data.statuses.forEach(item => {
-   db.twitter.findOne({tweetID: item.tweetID}, (err, document) => {
+   db.tweet.findOne({tweetID: item.tweetID}, (err, document) => {
      if(!document) {
-       let tweet = {}
-       tweet.tweetID = item.id
-       tweet.text = item.text
-       tweet.textCreatedDate = item.created_at
-       db.twitter.insert(tweet, err => {
+       let tweet = item
+       tweet.created_at = new Date(item.created_at)
+       tweet.user.created_at = new Date(item.user.created_at)
+       tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
+       tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+       db.tweet.insert(tweet, err => {
          if(err) {
            console.log(err)
          }
@@ -73,14 +74,14 @@ function saveTweet(data) {
      }
    })
  })
- console.log('Tweets have been saved')
+ console.log('Saved tweets run complete')
 }
 
 // save tweets every 15 minutes
-let saveTweetJob = new cronJob('0 */15 * * * *', () => {
+let saveTweetJob = new cronJob('*/30 * * * * *', () => {
   getAllQuery().then(docs => {
     docs.forEach(item => {
-      T.get('search/tweets', { q: item.query}, (err, data) => {
+      T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
         if(err) {
           console.log(err.stack)
         }
@@ -123,7 +124,7 @@ function getAllQuery() {
 }
 
 function testTwitterQuery() {
-  db.twitter.find((err, docs) => {
+  db.tweet.find((err, docs) => {
     if(err) {
       console.log(err)
     }
@@ -146,7 +147,7 @@ function testTweetQuery() {
 
 export function getAllTweet() {
   return new Promise((resolve, reject) => {
-    db.twitter.find((err, docs) => {
+    db.tweet.find((err, docs) => {
       if(err) {
         reject(err)
       }
