@@ -4,11 +4,14 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import twitterRouter from './controller/TwitterController'
 import { Twitter } from './model/Twitter'
+import cors from 'cors'
 
 
 const port = process.env.port || 7777
 let app = express()
 
+//enable cors
+app.use(cors())
 
 // parse application/json
 app.use(bodyParser.json())

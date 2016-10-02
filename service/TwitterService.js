@@ -76,7 +76,6 @@ function saveTweet(data) {
      }
    })
  })
- console.log('Saved tweets run complete')
 }
 
 // save tweets every 15 minutes
