@@ -78,29 +78,29 @@ function saveTweet(data) {
  })
 }
 
-// save tweets every 15 minutes
-let saveTweetJob = new cronJob('*/30 * * * * *', () => {
-  getAllQuery().then(docs => {
-    docs.forEach(item => {
-      T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
-        if(err) {
-          console.log(err.stack)
-        }
-        else {
-          saveTweet(data)
-        }
-      })
-    })
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-},
-() => {
-  console.log('saveTweetJob has stopped')
-},
-true
-)
+// // save tweets every 30 second
+// let saveTweetJob = new cronJob('*/30 * * * * *', () => {
+//   getAllQuery().then(docs => {
+//     docs.forEach(item => {
+//       T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
+//         if(err) {
+//           console.log(err.stack)
+//         }
+//         else {
+//           saveTweet(data)
+//         }
+//       })
+//     })
+//   })
+//   .catch((err) => {
+//     console.log(err)
+//   })
+// },
+// () => {
+//   console.log('saveTweetJob has stopped')
+// },
+// true
+// )
 
 export function addQuery(query) {
   db.tweetQuery.insert({ query: query }, err => {
