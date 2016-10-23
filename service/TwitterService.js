@@ -27,14 +27,14 @@ export function tweet(status) {
 }
 
 export function searchAndSaveTweet(q) {
-  return new new Promise((resolve, reject) => {
-    searchTweet.then(data => {
+  return new Promise((resolve, reject) => {
+    searchTweet(q).then(data => {
       saveTweet(data)
       resolve(data)
     })
-    .catch(err) {
+    .catch(err => {
       reject(err)
-    }
+    })
   })
 }
 
@@ -70,7 +70,7 @@ export function searchTweetNearby(lat, lng, since) {
 
 function saveTweet(data) {
   axios.post('http://203.151.85.73:5000/twitter/saveTweet', {
-    statuses: data.statuses
+    tweets: data.statuses
   }).catch(err => {
     console.log(err)
   })
