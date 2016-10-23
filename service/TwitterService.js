@@ -27,8 +27,8 @@ export function tweet(status) {
 }
 
 export function searchAndSaveTweet(q) {
-  return new new Promise((resolve, reject) => {
-    searchTweet.then(data => {
+  return new Promise((resolve, reject) => {
+    searchTweet(q).then(data => {
       saveTweet(data)
       resolve(data)
     })
