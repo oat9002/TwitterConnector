@@ -32,9 +32,9 @@ export function searchAndSaveTweet(q) {
       saveTweet(data)
       resolve(data)
     })
-    .catch(err) {
+    .catch(err => {
       reject(err)
-    }
+    })
   })
 }
 
@@ -70,7 +70,7 @@ export function searchTweetNearby(lat, lng, since) {
 
 function saveTweet(data) {
   axios.post('http://203.151.85.73:5000/twitter/saveTweet', {
-    statuses: data.statuses
+    tweets: data.statuses
   }).catch(err => {
     console.log(err)
   })
