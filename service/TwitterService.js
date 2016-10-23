@@ -1,6 +1,7 @@
 import Twit from 'twit'
 import { db } from '../db'
 import cron from 'cron'
+import axios from 'axios'
 
 let cronJob = cron.CronJob
 
@@ -25,15 +26,25 @@ export function tweet(status) {
   })
 }
 
+export function searchAndSaveTweet(q) {
+  return new Promise((resolve, reject) => {
+    searchTweet(q).then(data => {
+      saveTweet(data)
+      resolve(data)
+    })
+    .catch(err => {
+      reject(err)
+    })
+  })
+}
 
 export function searchTweet(q) {
   return new Promise((resolve, reject) => {
-    T.get('search/tweets', { q: q, count: 100}, (err, data, response) => {
+    T.get('search/tweets', { q: q, count: 10}, (err, data, response) => {
       if(err) {
         reject(err)
       }
       else {
-        saveTweet(data)
         resolve(data)
       }
     })
@@ -58,24 +69,29 @@ export function searchTweetNearby(lat, lng, since) {
 }
 
 function saveTweet(data) {
-  data.statuses.forEach(item => {
-   db.tweet.findOne({id: item.id}, (err, document) => {
-     if(!document) {
-       let tweet = item
-       tweet.created_at = new Date(item.created_at)
-       tweet.user.created_at = new Date(item.user.created_at)
-       if(typeof tweet.retweeted_status != 'undefined') {
-         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
-         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
-       }
-       db.tweet.insert(tweet, err => {
-         if(err) {
-           console.log(err)
-         }
-       })
-     }
-   })
- })
+  axios.post('http://203.151.85.73:5000/twitter/saveTweet', {
+    tweets: data.statuses
+  }).catch(err => {
+    console.log(err)
+  })
+ //  data.statuses.forEach(item => {
+ //   db.tweet.findOne({id: item.id}, (err, document) => {
+ //     if(!document) {
+ //       let tweet = item
+ //       tweet.created_at = new Date(item.created_at)
+ //       tweet.user.created_at = new Date(item.user.created_at)
+ //       if(typeof tweet.retweeted_status != 'undefined') {
+ //         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
+ //         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+ //       }
+ //       db.tweet.insert(tweet, err => {
+ //         if(err) {
+ //           console.log(err)
+ //         }
+ //       })
+ //     }
+ //   })
+ // })
 }
 
 // // save tweets every 30 second

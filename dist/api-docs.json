@@ -106,10 +106,104 @@
     "/": {
       "get":{
         "tags": [ "Twitter"],
-        "description": "Return home page",
+        "description": "Home page",
         "operationId": "",
         "produces": [
           "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "response"
+          }
+        }
+      }
+    },
+    "/index": {
+      "get":{
+        "tags": [ "Twitter"],
+        "description": "index page",
+        "operationId": "",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "response"
+          }
+        }
+      }
+    },
+    "/tweet": {
+      "post":{
+        "tags": [ "Twitter"],
+        "description": "Tweet something to an account",
+        "operationId": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "body",
+            "description": "Tweet",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "response"
+          }
+        }
+      }
+    },
+    "/searchTweet": {
+      "post":{
+        "tags": [ "Twitter"],
+        "description": "Seacrh tweets with any keywords",
+        "operationId": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "body",
+            "description": "keywords",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "response"
+          }
+        }
+      }
+    },
+    "/searchTweetNearby": {
+      "post":{
+        "tags": [ "Twitter"],
+        "description": "Seacrh tweets with latitude and longgitude",
+        "operationId": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "body",
+            "description": "latitude",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "lng",
+            "in": "body",
+            "description": "longitude",
+            "required": true,
+            "type": "number"
+          }
         ],
         "responses": {
           "200": {

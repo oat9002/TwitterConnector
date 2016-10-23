@@ -22,7 +22,17 @@ twitterRouter.route('/searchTweet').post((req, res) => {
       res.send({tweets: result.statuses})
     })
     .catch(err => {
-      console.log(err.stack);
+      console.log(err.stack)
+    })
+})
+
+twitterRouter.route('/searchAndSaveTweet').post((req, res) => {
+  TwitterService.searchAndSaveTweet(req.body.q)
+    .then(result => {
+      res.send({tweets: result.statuses})
+    })
+    .catch(err => {
+      console.log(err.stack)
     })
 })
 

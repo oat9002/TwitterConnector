@@ -1,14 +1,15 @@
 {
-  "name": "social_rest_api",
+  "name": "Twitter_Connector",
   "version": "1.0.0",
   "description": "",
-  "main": "routes.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon ./index.js --exec babel-node --presets es2015"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.15.2",
     "babel-cli": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
@@ -21,7 +22,6 @@
     "mongojs": "^2.4.0",
     "nodemon": "^1.10.2",
     "swagger-node-express": "~2.0",
-    "swagger-parser": "^3.4.1",
     "twit": "^2.2.5"
   },
   "devDependencies": {
