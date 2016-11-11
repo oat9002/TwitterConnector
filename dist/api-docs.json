@@ -181,6 +181,30 @@
         }
       }
     },
+    "/searchAndSaveTweet": {
+      "post":{
+        "tags": [ "Twitter"],
+        "description": "Seacrh and save tweets with any keywords",
+        "operationId": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "body",
+            "description": "keywords",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "response"
+          }
+        }
+      }
+    },
     "/searchTweetNearby": {
       "post":{
         "tags": [ "Twitter"],

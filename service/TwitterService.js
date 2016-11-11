@@ -51,13 +51,9 @@ export function searchTweet(q) {
   })
 }
 
-function addCoordinate(lat, lng) {
-
-}
-
 export function searchTweetNearby(lat, lng, since) {
   return new Promise((resolve, reject) => {
-    T.get('search/tweets', { q: "since:" + since, geocode: "\"" + lat + "," + lng + "," + "1km\"", result_type: 'mixed' }, (err, data, response) => {
+    T.get('search/tweets', { q: "since:" + since, geocode: "\"" + lat + "," + lng + "," + "0.2km\"", result_type: 'mixed' }, (err, data, response) => {
       if(err) {
         reject(err)
       }
@@ -68,55 +64,58 @@ export function searchTweetNearby(lat, lng, since) {
   })
 }
 
-function saveTweet(data) {
+function sendToHadoop() {
   axios.post('http://203.151.85.73:5000/twitter/saveTweet', {
     tweets: data.statuses
   }).catch(err => {
     console.log(err)
   })
- //  data.statuses.forEach(item => {
- //   db.tweet.findOne({id: item.id}, (err, document) => {
- //     if(!document) {
- //       let tweet = item
- //       tweet.created_at = new Date(item.created_at)
- //       tweet.user.created_at = new Date(item.user.created_at)
- //       if(typeof tweet.retweeted_status != 'undefined') {
- //         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
- //         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
- //       }
- //       db.tweet.insert(tweet, err => {
- //         if(err) {
- //           console.log(err)
- //         }
- //       })
- //     }
- //   })
- // })
 }
 
-// // save tweets every 30 second
-// let saveTweetJob = new cronJob('*/30 * * * * *', () => {
-//   getAllQuery().then(docs => {
-//     docs.forEach(item => {
-//       T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
-//         if(err) {
-//           console.log(err.stack)
-//         }
-//         else {
-//           saveTweet(data)
-//         }
-//       })
-//     })
-//   })
-//   .catch((err) => {
-//     console.log(err)
-//   })
-// },
-// () => {
-//   console.log('saveTweetJob has stopped')
-// },
-// true
-// )
+function saveTweet(data) {
+  data.statuses.forEach(item => {
+   db.tweet.findOne({id: item.id}, (err, document) => {
+     if(!document) {
+       let tweet = item
+       tweet.created_at = new Date(item.created_at)
+       tweet.user.created_at = new Date(item.user.created_at)
+       if(typeof tweet.retweeted_status != 'undefined') {
+         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
+         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+       }
+       db.tweet.insert(tweet, err => {
+         if(err) {
+           console.log(err)
+         }
+       })
+     }
+   })
+ })
+}
+
+// save tweets every 30 second
+let saveTweetJob = new cronJob('*/30 * * * * *', () => {
+  getAllQuery().then(docs => {
+    docs.forEach(item => {
+      T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
+        if(err) {
+          console.log(err.stack)
+        }
+        else {
+          saveTweet(data)
+        }
+      })
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+},
+() => {
+  console.log('saveTweetJob has stopped')
+},
+true
+)
 
 export function addQuery(query) {
   db.tweetQuery.insert({ query: query }, err => {
