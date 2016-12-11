@@ -16,8 +16,8 @@ twitterRouter.route('/tweet').post((req, res) => {
   res.send(TwitterService.tweet(req.body.status))
 })
 
-twitterRouter.route('/searchTweet').post((req, res) => {
-  TwitterService.searchTweet(req.body.q)
+twitterRouter.route('/searchTweet').get((req, res) => {
+  TwitterService.searchTweet(req.query.q)
     .then(result => {
       res.send({tweets: result.statuses})
     })
@@ -26,8 +26,8 @@ twitterRouter.route('/searchTweet').post((req, res) => {
     })
 })
 
-twitterRouter.route('/searchAndSaveTweet').post((req, res) => {
-  TwitterService.searchAndSaveTweet(req.body.q)
+twitterRouter.route('/searchAndSaveTweet').get((req, res) => {
+  TwitterService.searchAndSaveTweet(req.query.q)
     .then(result => {
       res.send({tweets: result.statuses})
     })
@@ -36,8 +36,8 @@ twitterRouter.route('/searchAndSaveTweet').post((req, res) => {
     })
 })
 
-twitterRouter.route('/searchTweetNearby').post((req, res) => {
-  TwitterService.searchTweetNearby(req.body.lat, req.body.lng, req.body.since)
+twitterRouter.route('/searchTweetNearby').get((req, res) => {
+  TwitterService.searchTweetNearby(req.query.lat, req.query.lng, req.query.since)
     .then(result => {
       res.send({tweets: result.statuses})
     })

@@ -158,7 +158,7 @@
       }
     },
     "/searchTweet": {
-      "post":{
+      "get":{
         "tags": [ "Twitter"],
         "description": "Seacrh tweets with any keywords",
         "operationId": "",
@@ -168,7 +168,7 @@
         "parameters": [
           {
             "name": "q",
-            "in": "body",
+            "in": "query",
             "description": "keywords",
             "required": true,
             "type": "string"
@@ -182,7 +182,7 @@
       }
     },
     "/searchAndSaveTweet": {
-      "post":{
+      "get":{
         "tags": [ "Twitter"],
         "description": "Seacrh and save tweets with any keywords",
         "operationId": "",
@@ -192,7 +192,7 @@
         "parameters": [
           {
             "name": "q",
-            "in": "body",
+            "in": "query",
             "description": "keywords",
             "required": true,
             "type": "string"
@@ -206,7 +206,7 @@
       }
     },
     "/searchTweetNearby": {
-      "post":{
+      "get":{
         "tags": [ "Twitter"],
         "description": "Seacrh tweets with latitude and longgitude",
         "operationId": "",
@@ -216,14 +216,14 @@
         "parameters": [
           {
             "name": "lat",
-            "in": "body",
+            "in": "query",
             "description": "latitude",
             "required": true,
             "type": "number"
           },
           {
             "name": "lng",
-            "in": "body",
+            "in": "query",
             "description": "longitude",
             "required": true,
             "type": "number"

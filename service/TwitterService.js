@@ -95,8 +95,10 @@ function saveTweet(data) {
 
 // save tweets every 30 second
 let saveTweetJob = new cronJob('*/30 * * * * *', () => {
-  getAllQuery().then(docs => {
-    docs.forEach(item => {
+  // getAllQuery().then(docs => {
+    // docs.forEach(item => {
+      let item = {}
+      item.query = "สยามพารากอน"
       T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
         if(err) {
           console.log(err.stack)
@@ -105,8 +107,8 @@ let saveTweetJob = new cronJob('*/30 * * * * *', () => {
           saveTweet(data)
         }
       })
-    })
-  })
+    // })
+  // })
   .catch((err) => {
     console.log(err)
   })
