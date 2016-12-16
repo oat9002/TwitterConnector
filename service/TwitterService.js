@@ -83,6 +83,9 @@ function saveTweet(data) {
          tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
          tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
        }
+       if(item.retweeted_status != null) {
+         tweet.text = item.retweeted_status.text
+       }
        db.tweet.insert(tweet, err => {
          if(err) {
            console.log(err)
@@ -174,4 +177,57 @@ export function getAllTweet() {
       }
     })
   })
+}
+
+
+let saveTweetSpecificJob = new cronJob('*/30 * * * * *', () => {
+  // getAllQuery().then(docs => {
+    // docs.forEach(item => {
+      let item = []
+      item[0] = "กลัว"
+      item.forEach(i => {
+        T.get('search/tweets', { q: i, count: 100}, (err, data) => {
+          if(err) {
+            console.log(err.stack)
+          }
+          else {
+            saveTweetSpecific(data)
+          }
+        })
+      })
+
+    // })
+  // })
+  .catch((err) => {
+    console.log(err)
+  })
+},
+() => {
+  console.log('saveTweetJob has stopped')
+},
+true
+)
+
+function saveTweetSpecific(data) {
+  data.statuses.forEach(item => {
+   db.tweet.findOne({id: item.id}, (err, document) => {
+     if(!document) {
+       let tweet = item
+       tweet.created_at = new Date(item.created_at)
+       tweet.user.created_at = new Date(item.user.created_at)
+       if(typeof tweet.retweeted_status != 'undefined') {
+         tweet.retweeted_status.created_at = new Date(item.retweeted_status.created_at)
+         tweet.retweeted_status.user.created_at = new Date(item.retweeted_status.user.created_at)
+       }
+       if(item.retweeted_status != null) {
+         tweet.text = item.retweeted_status.text
+       }
+       db.tweet.insert(tweet, err => {
+         if(err) {
+           console.log(err)
+         }
+       })
+     }
+   })
+ })
 }
