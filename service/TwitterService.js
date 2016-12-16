@@ -186,6 +186,7 @@ let saveTweetSpecificJob = new cronJob('*/30 * * * * *', () => {
       let item = []
       item[0] = "กลัว"
       item.forEach(i => {
+        console.log(i);
         T.get('search/tweets', { q: i, count: 100}, (err, data) => {
           if(err) {
             console.log(err.stack)
@@ -194,13 +195,13 @@ let saveTweetSpecificJob = new cronJob('*/30 * * * * *', () => {
             saveTweetSpecific(data)
           }
         })
+        .catch((err) => {
+          console.log(err)
+        })
       })
 
     // })
   // })
-  .catch((err) => {
-    console.log(err)
-  })
 },
 () => {
   console.log('saveTweetJob has stopped')
@@ -222,7 +223,7 @@ function saveTweetSpecific(data) {
        if(item.retweeted_status != null) {
          tweet.text = item.retweeted_status.text
        }
-       db.tweet.insert(tweet, err => {
+       db.tweetSpecific.insert(tweet, err => {
          if(err) {
            console.log(err)
          }
