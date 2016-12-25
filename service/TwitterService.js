@@ -180,7 +180,7 @@ export function getAllTweet() {
 }
 
 
-let saveTweetSpecificJob = new cronJob('0 */1 * * * *', () => {
+let saveTweetSpecificJob = new cronJob('0 */30 * * * *', () => {
   // getAllQuery().then(docs => {
     // docs.forEach(item => {
       let item = []
