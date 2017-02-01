@@ -64,15 +64,23 @@ export function searchTweetNearby(lat, lng, since) {
   })
 }
 
-function sendToHadoop() {
-  axios.post('http://203.151.85.73:5000/twitter/saveTweet', {
-    tweets: data.statuses
+function sendToHadoop(data) {
+  let id = {
+    id: 12345
+  }
+
+  // axios.post('http://203.151.85.73:5001/twitter/addTweet', {
+  axios.post('http://localhost:5001/twitter/addTweet', {
+    tweets: data.statuses,
+    query: id
+  }).then(function (response) {
+    console.log(response)
   }).catch(err => {
     console.log(err)
   })
 }
 
-function saveTweet(data) {
+function saveTweet(data, query) {
   data.statuses.forEach(item => {
    db.tweet.findOne({id: item.id}, (err, document) => {
      if(!document) {
@@ -86,6 +94,7 @@ function saveTweet(data) {
        if(item.retweeted_status != null) {
          tweet.text = item.retweeted_status.text
        }
+       tweet.query = query
        db.tweet.insert(tweet, err => {
          if(err) {
            console.log(err)
@@ -97,21 +106,22 @@ function saveTweet(data) {
 }
 
 // save tweets every 30 second
-let saveTweetJob = new cronJob('*/30 * * * * *', () => {
-  // getAllQuery().then(docs => {
-    // docs.forEach(item => {
-      let item = {}
-      item.query = "สยามพารากอน"
+let saveTweetJob = new cronJob('*/5 * * * *', () => {
+  getAllQuery().then(docs => {
+    docs.forEach(item => {
+      // let item = {}
+      // item.query = "สนามหลวง"
       T.get('search/tweets', { q: item.query, count: 100}, (err, data) => {
         if(err) {
           console.log(err.stack)
         }
         else {
-          saveTweet(data)
+          saveTweet(data, item.query)
+          // sendToHadoop(data)
         }
       })
-    // })
-  // })
+    })
+  })
   .catch((err) => {
     console.log(err)
   })
@@ -179,20 +189,29 @@ export function getAllTweet() {
   })
 }
 
+let T_ant = new Twit({
+  consumer_key: 'CpCVGROxFCQDcV5Jy0eYFWW7K',
+  consumer_secret: '2pWbgAa6tWs3X7HG8NXU7Vx5jogHjp4FstsQX0bAOI0kOAmfKO',
+  access_token: '3854752459-9m8JOA8p3ZqT6PONwuIkDovFDuIEpIg817isjs6',
+  access_token_secret: 'AaRo30SSKLN8buG2J9JfgsmGRBfjw4AR1XjdovfimfL5V',
+  timeout_ms: 60 * 1000
+})
 
-let saveTweetSpecificJob = new cronJob('0 */30 * * * *', () => {
+let saveTweetSpecificJob = new cronJob('*/30 * * * * *', () => {
   // getAllQuery().then(docs => {
     // docs.forEach(item => {
       let item = []
-      item[0] = "มีความสุข"
+      item[0] = "ไป"
+      item[1] = "เรา"
+      item[2] = "เธอ"
       item.forEach(i => {
         console.log(i);
-        T.get('search/tweets', { q: i, count: 100}, (err, data) => {
+        T_ant.get('search/tweets', { q: i, count: 100}, (err, data) => {
           if(err) {
             console.log(err.stack)
           }
           else {
-            saveTweetSpecific(data)
+            saveTweetSpecific(data, i)
           }
         })
         .catch((err) => {
@@ -209,7 +228,7 @@ let saveTweetSpecificJob = new cronJob('0 */30 * * * *', () => {
 true
 )
 
-function saveTweetSpecific(data) {
+function saveTweetSpecific(data, query) {
   data.statuses.forEach(item => {
    db.tweet.findOne({id: item.id}, (err, document) => {
      if(!document) {
@@ -223,6 +242,7 @@ function saveTweetSpecific(data) {
        if(item.retweeted_status != null) {
          tweet.text = item.retweeted_status.text
        }
+       tweet.query = query
        db.tweetSpecific.insert(tweet, err => {
          if(err) {
            console.log(err)
