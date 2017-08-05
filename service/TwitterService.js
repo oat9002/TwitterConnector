@@ -117,7 +117,7 @@ data.statuses.forEach(item => {
 }
 
 // save tweets every 30 second
-let saveTweetJob = new cronJob('*/30 * * * * *', () => {
+let saveTweetJob = new cronJob('*/5 * * * *', () => {
   let all_tweets = []
   axios.get('http://localhost:5005/query').then((response) => {
     response.data.queries.forEach((item, idx) => {
@@ -133,12 +133,10 @@ let saveTweetJob = new cronJob('*/30 * * * * *', () => {
                 tweet.tweets = data.statuses
                 tweet.query = item
                 all_tweets.push(tweet)
+                saveTweet(data, item.place_id)
                 if(idx == response.data.queries.length - 1) {
                     sendToHadoop(all_tweets)
-                    console.log("here")
                 }
-                saveTweet(data, item.place_id)
-                // sendToHadoop(data, item)
             }
         })
     })
